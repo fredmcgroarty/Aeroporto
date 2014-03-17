@@ -1,6 +1,6 @@
-module Weather 
+class Weather 
 
-	def self.stormy?
+	def stormy?
 		rand > 0.8 ?  true : false
 	end
 

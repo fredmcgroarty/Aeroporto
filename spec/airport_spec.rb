@@ -4,28 +4,29 @@ require 'weather'
 
 	describe Airport do 
 
-		let(:airport){Airport.new}
+		let(:airport){Airport.new(weather)}
 		let(:plane){Plane.new}
-
-	it "should have a max capacity of 20" do 
-		expect(airport.capacity).to eq(20)
-	end
-
-	it "should know when it is full" do
-		20.times{airport.accept_plane(plane)}
-		expect(airport.plane_count).to eq(20)
-		expect(airport).to be_full
-	end
-
-	it "should not allow plane to land if its full" do
-		20.times{airport.accept_plane(plane)}
-		lambda {airport.accept_plane(plane)}.should raise_error("we are full!")
-	end
+		let(:weather){weather = double("weather")}
 
 	context "#good weather" do
-		let(:airport) do
-			Weather.stub(:stormy? => false)
-			Airport.new
+		before(:each) do
+   	  weather.stub(:stormy?).and_return(false)
+   	  expect(weather.stormy?).to be_false
+  	end
+
+		it "should have a max capacity of 20" do 
+			expect(airport.capacity).to eq(20)
+		end
+	
+		it "should know when it is full" do
+			20.times{airport.accept_plane(plane)}
+			expect(airport.plane_count).to eq(20)
+			expect(airport).to be_full
+		end
+	
+		it "should not allow plane to land if its full" do
+			20.times{airport.accept_plane(plane)}
+			lambda {airport.accept_plane(plane)}.should raise_error("we are full!")
 		end
 
 		it "should accept planes" do
@@ -44,20 +45,20 @@ require 'weather'
 	end
 
 	context "#stormy weather" do
-		let(:airport) do 
-			Weather.stub(:stormy? => true)
-			Airport.new
-		end
+		before(:each) do
+   	  weather.stub(:stormy?).and_return(true)
+   	  expect(weather.stormy?).to be_true
+  	end
 
 		it "should not allow planes to land in stormy weather" do 
-   	  expect(weather).to be_stormy
    	  lambda {airport.accept_plane(plane)}.should raise_error("she just cant take it captain!")
 		end
 
+		it "should not allow planes to take off in stormy weather" do 
+			lambda {airport.take_off(plane)}.should raise_error("the weather is shite mate")
+		end
+
 	end
-
-
-
 
 end
 
