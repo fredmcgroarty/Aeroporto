@@ -1,5 +1,6 @@
-class Airport 
-
+require 'weather'
+class Airport
+include Weather
 
 	def initialize 
 		@capacity ||= 20
@@ -15,12 +16,11 @@ class Airport
 	end
 
 	def accept_plane(plane)
-		if full?
-			raise "we are full!"
-		else
+			raise "she just cant take it captain!" if Weather.stormy? 
+			raise "we are full!" if full?
 			plane.land
 			@planes << plane
-		end
+		
 	end
 
 	def take_off(plane)
